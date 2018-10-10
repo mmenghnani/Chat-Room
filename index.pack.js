@@ -1166,6 +1166,10 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Message = __webpack_require__(40);
+
+var _Message2 = _interopRequireDefault(_Message);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1198,20 +1202,7 @@ var MessageList = function (_React$Component) {
         "div",
         { className: "message-list" },
         this.props.messages.map(function (message, index) {
-          return _react2.default.createElement(
-            "div",
-            { key: index, className: "message" },
-            _react2.default.createElement(
-              "div",
-              { className: "message-username" },
-              message.senderId
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "message-text" },
-              message.text
-            )
-          );
+          return _react2.default.createElement(_Message2.default, { key: index, username: message.senderId, text: message.text });
         })
       );
     }
@@ -21622,6 +21613,42 @@ try {
 
 module.exports = g;
 
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+              value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Message(props) {
+              return _react2.default.createElement(
+                            "div",
+                            { className: "message" },
+                            _react2.default.createElement(
+                                          "div",
+                                          { className: "message-username" },
+                                          props.username
+                            ),
+                            _react2.default.createElement(
+                                          "div",
+                                          { className: "message-text" },
+                                          props.text
+                            )
+              );
+}
+
+exports.default = Message;
 
 /***/ })
 /******/ ]);
