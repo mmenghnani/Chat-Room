@@ -5,6 +5,9 @@ class RoomList extends React.Component {
         return (
             <div className="rooms-list">
                 <div className="help-text">RoomList</div>
+                <ul>
+                    {console.log(this.props)}
+                </ul>
             </div>
         )
     }
