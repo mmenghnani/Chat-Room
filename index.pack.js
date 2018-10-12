@@ -1050,6 +1050,8 @@ var App = function (_React$Component) {
             joinedRooms: []
         };
         _this.sendMessage = _this.sendMessage.bind(_this);
+        _this.subscribeToRoom = _this.subscribeToRoom.bind(_this);
+        _this.getRooms = _this.getRooms.bind(_this);
         return _this;
     }
 
@@ -1068,28 +1070,24 @@ var App = function (_React$Component) {
 
             chatManager.connect().then(function (currentUser) {
                 _this2.currentUser = currentUser;
+                _this2.getRooms();
+                _this2.subscribeToRoom();
+            }).catch(function (err) {
+                return console.log('error on connecting: ', err);
+            });
+        }
+    }, {
+        key: 'getRooms',
+        value: function getRooms() {
+            var _this3 = this;
 
-                _this2.currentUser.getJoinableRooms().then(function (joinableRooms) {
-                    _this2.setState({
-                        joinableRooms: joinableRooms,
-                        joinedRooms: _this2.currentUser.rooms
-                    });
-                }).catch(function (err) {
-                    return console.log('error on joinableRooms: ', errr);
-                });
-
-                _this2.currentUser.subscribeToRoom({
-                    roomId: 18255060,
-                    hooks: {
-                        onNewMessage: function onNewMessage(message) {
-                            _this2.setState({
-                                messages: [].concat(_toConsumableArray(_this2.state.messages), [message])
-                            });
-                        }
-                    }
+            this.currentUser.getJoinableRooms().then(function (joinableRooms) {
+                _this3.setState({
+                    joinableRooms: joinableRooms,
+                    joinedRooms: _this3.currentUser.rooms
                 });
             }).catch(function (err) {
-                return console.log('error on connecting: ', errr);
+                return console.log('error on joinableRooms: ', err);
             });
         }
     }, {
@@ -1101,12 +1099,31 @@ var App = function (_React$Component) {
             });
         }
     }, {
+        key: 'subscribeToRoom',
+        value: function subscribeToRoom(roomId) {
+            var _this4 = this;
+
+            this.setState({
+                messages: []
+            });
+            this.currentUser.subscribeToRoom({
+                roomId: roomId,
+                hooks: {
+                    onNewMessage: function onNewMessage(message) {
+                        _this4.setState({
+                            messages: [].concat(_toConsumableArray(_this4.state.messages), [message])
+                        });
+                    }
+                }
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
                 'div',
                 { className: 'app' },
-                _react2.default.createElement(_RoomList2.default, { rooms: [].concat(_toConsumableArray(this.state.joinableRooms), _toConsumableArray(this.state.joinedRooms)) }),
+                _react2.default.createElement(_RoomList2.default, { subscribeToRoom: this.subscribeToRoom, rooms: [].concat(_toConsumableArray(this.state.joinableRooms), _toConsumableArray(this.state.joinedRooms)) }),
                 _react2.default.createElement(_MessageList2.default, { messages: this.state.messages }),
                 _react2.default.createElement(_SendMessageForm2.default, { sendMessage: this.sendMessage }),
                 _react2.default.createElement(_NewRoomForm2.default, null)
@@ -1238,14 +1255,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var DUMMY_DATA = [{
-  senderId: "Mohit",
-  text: "I am doing fine"
-}, {
-  senderId: "Sneha",
-  text: "What is going on?"
-}];
-
 var MessageList = function (_React$Component) {
   _inherits(MessageList, _React$Component);
 
@@ -1372,6 +1381,8 @@ var RoomList = function (_React$Component) {
   _createClass(RoomList, [{
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       return _react2.default.createElement(
         "div",
         { className: "rooms-list" },
@@ -1389,7 +1400,9 @@ var RoomList = function (_React$Component) {
               { key: room.id, className: "room" },
               _react2.default.createElement(
                 "a",
-                { href: "#" },
+                { onClick: function onClick() {
+                    return _this2.props.subscribeToRoom(room.id);
+                  }, href: "#" },
                 "# ",
                 room.name
               )
