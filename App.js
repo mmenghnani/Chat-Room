@@ -12,6 +12,7 @@ class App extends React.Component {
     constructor() {
         super()
         this.state = {
+            roomId : null,
             messages: [],
             joinableRooms: [],
             joinedRooms: []
@@ -55,7 +56,7 @@ class App extends React.Component {
     sendMessage(text) {
         this.currentUser.sendMessage({
             text,
-            roomId: 18255060
+            roomId: this.state.roomId
         })
     }
 
@@ -73,12 +74,18 @@ class App extends React.Component {
                 }
             }
         })
+        .then(room => {
+            this.setState({
+                roomId : room.id
+            })
+            this.getRooms();
+        })
     }
     
     render() {
         return (
             <div className="app">
-                <RoomList subscribeToRoom={this.subscribeToRoom} rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} />
+                <RoomList roomId = {this.state.roomId} subscribeToRoom={this.subscribeToRoom} rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} />
                 <MessageList messages={this.state.messages} />
                 <SendMessageForm sendMessage={this.sendMessage} />
                 <NewRoomForm />
